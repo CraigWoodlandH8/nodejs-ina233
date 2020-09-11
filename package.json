@@ -1,0 +1,22 @@
+{
+  "name": "nodejs-ina233",
+  "version": "1.0.0",
+  "description": "",
+  "main": "ina233.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Herotech8/nodejs-ina233.git"
+  },
+  "author": "Craig Woodland",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Herotech8/nodejs-ina233/issues"
+  },
+  "homepage": "https://github.com/Herotech8/nodejs-ina233#readme",
+  "dependencies": {
+    "i2c-bus": "^5.2.0"
+  }
+}
