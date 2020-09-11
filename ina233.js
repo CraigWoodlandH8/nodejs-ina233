@@ -92,8 +92,6 @@ class ina233 {
       var powerLSB = 25 * currentLSB;
       var calibration = parseInt(0.00512 / (shuntOhms * currentLSB));
 
-      console.log(calibration);
-
       this.currentLSB = currentLSB;
 
       this._b_c = 0;
@@ -102,8 +100,6 @@ class ina233 {
 
       this._R_c = calculations._R_c;
       this._m_c = calculations._m_c;
-
-      console.log(this._R_c, this._m_c, this._b_c);
 
       // Calibration Register = 0xD4
       this.writeRegisterWord(0xD4, calibration).then(() => {
