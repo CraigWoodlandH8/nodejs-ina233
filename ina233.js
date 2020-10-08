@@ -20,7 +20,7 @@ class ina233 {
 
       this.wire = i2c.open(this.bus, (err) => {
         if(err) {
-          throw new Exception(err);
+          throw err;
         } else {
           resolve();
         }
@@ -63,7 +63,7 @@ class ina233 {
 
       this.wire.readI2cBlock(this.address, register, 2, res, (err, bytesRead, buffer) => {
         if(err) {
-          throw new Exception(err);
+          throw err;
         } else {
           resolve(buffer);
         }
@@ -75,7 +75,7 @@ class ina233 {
     return new Promise((resolve, reject) => {
       this.wire.readWord(this.address, register, (err, word) => {
         if(err) {
-          throw new Exception(err);
+          throw err;
         } else {
           resolve(word);
         }
