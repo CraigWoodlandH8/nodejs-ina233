@@ -12,7 +12,15 @@ var _twos_compliment_to_int = (val, bits) => {
   return val;
 };
 
+var _swap16 = (val) => {
+  return ((val & 0xFF) << 8) | ((val >> 8) & 0xFF);
+};
+
 class ina233 {
+  newSensor() {
+    this.newSensor = true;
+  }
+  
   init(address, bus) {
     return new Promise((resolve, reject) => {
       this.address = (address === undefined ? 0x41 : address);
@@ -123,13 +131,28 @@ class ina233 {
 
   busVoltageOut() {
     return new Promise((resolve, reject) => {
-      // Bus Voltage Out (raw) Register = 0x8B
-      this.readRegisterWord(0x8B).then((value) => {
+      // Bus Voltage Out (raw) Register = 0x8B (old) / 0x02 (new)
+
+      var address = 0x8B;
+      
+      if(this.newSensor !== undefined && this.newSensor === true) {
+        address = 0x02;
+      }
+
+      this.readRegisterWord(address).then((value) => {
         // Bus Voltage LSB = 0.00125
-        resolve({
-          raw: value,
-          V: value * 0.00125
-        });
+        
+        if(this.newSensor !== undefined && this.newSensor === true) {
+          resolve({
+            raw: value,
+            V: _swap16(value) * 0.00125
+          });
+        } else {
+          resolve({
+            raw: value,
+            V: value * 0.00125
+          });
+        }
       });
     });
   }
@@ -151,15 +174,29 @@ class ina233 {
 
   currentOut() {
     return new Promise((resolve, reject) => {
-      // Current Out (raw) Register = 0x8C
-      this.readRegisterWord(0x8C).then((value) => {
-        var current = (value * (Math.pow(10, -this._R_c)) - this._b_c) / this._m_c;
-        current = current * 1000;
+      // Current Out (raw) Register = 0x8C (old) / 0x04 (new)
+      
+      var address = 0x8C;
+      
+      if(this.newSensor !== undefined && this.newSensor === true) {
+        address = 0x04;
+      }
+      
+      this.readRegisterWord(address).then((value) => {
+        if(this.newSensor !== undefined && this.newSensor === true) {
+          resolve({
+            raw: value,
+            mA: (_swap16(value) * 0.0002) * 1000
+          });
+        } else {
+          var current = (value * (Math.pow(10, -this._R_c)) - this._b_c) / this._m_c;
+          current = current * 1000;
 
-        resolve({
-          raw: value,
-          mA: current
-        });
+          resolve({
+            raw: value,
+            mA: current
+          });
+        }
       });
     });
   }
