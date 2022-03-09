@@ -118,10 +118,11 @@ class ina233 {
       this._R_c = calculations._R_c;
       this._m_c = calculations._m_c;
 
-      // Calibration Register = 0xD4
-      this.writeRegisterWord(0xD4, calibration).then(() => {
-        resolve();
-      });
+      if(this.sensorType == 2) {
+        this.writeRegisterWord(0x05, 0x0014).then(resolve);
+      } else {
+        this.writeRegisterWord(0xD4, calibration).then(resolve);
+      }
     });
   }
 
