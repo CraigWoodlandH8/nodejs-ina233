@@ -17,12 +17,11 @@ var _swap16 = (val) => {
 };
 
 class ina233 {
-  newSensor() {
-    this.newSensor = true;
-  }
+  newSensor() { }
   
   init(address, bus) {
     return new Promise((resolve, reject) => {
+      this.sensorType = 1;
       this.address = (address === undefined ? 0x41 : address);
       this.bus = (bus === undefined ? 1 : bus);
 
@@ -30,7 +29,17 @@ class ina233 {
         if(err) {
           throw err;
         } else {
-          resolve();
+          this.readRegisterBlock(0x00).then((word) => {
+            if(word.toString('hex') == 4127) {
+              this.sensorType = 2;
+            }
+          }).catch((err) => {
+            console.error(err);
+          }).finally(() => {
+            console.log('Sensor Type is #' + this.sensorType);
+            
+            resolve();
+          });
         }
       });
     });
@@ -135,7 +144,7 @@ class ina233 {
 
       var address = 0x8B;
       
-      if(this.newSensor !== undefined && this.newSensor === true) {
+      if(this.sensorType == 2) {
         address = 0x02;
       }
 
@@ -178,7 +187,7 @@ class ina233 {
       
       var address = 0x8C;
       
-      if(this.newSensor !== undefined && this.newSensor === true) {
+      if(this.sensorType == 2) {
         address = 0x04;
       }
       
