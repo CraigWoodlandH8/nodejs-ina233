@@ -151,7 +151,7 @@ class ina233 {
       this.readRegisterWord(address).then((value) => {
         // Bus Voltage LSB = 0.00125
         
-        if(this.newSensor !== undefined && this.newSensor === true) {
+        if(this.sensorType == 2) {
           resolve({
             raw: value,
             V: _swap16(value) * 0.00125
@@ -192,7 +192,7 @@ class ina233 {
       }
       
       this.readRegisterWord(address).then((value) => {
-        if(this.newSensor !== undefined && this.newSensor === true) {
+        if(this.sensorType == 2) {
           resolve({
             raw: value,
             mA: (_swap16(value) * 0.0002) * 1000
